@@ -38,9 +38,8 @@ public class Player_Controller : MonoBehaviour
 
     private void Update()
     {
-        Vector2 _Move = new Vector2(Input.GetAxis(HorizontalAxisName) * _Speed, Input.GetAxis(VerticalAxisName) * _Speed);
-        _RB.velocity = _Move;
-
+        //MovePlayer();
+        MovePlayerWithMouse();
 
         #region movement limitation
         if (transform.position.x > GameObject.Find(_Top_Right).transform.position.x)
@@ -68,6 +67,24 @@ public class Player_Controller : MonoBehaviour
 
 
 
+    }
+
+    private void MovePlayerWithMouse()
+    {
+        if (!Input.GetMouseButton(0)) return;// check if holding the mouse button
+
+        // Get mouse position in world coordinates
+        Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPos.z = transform.position.z; // Maintain object's original Z-position in 2D
+
+        // Smoothly move towards the mouse position
+        transform.position = Vector3.Lerp(transform.position, mouseWorldPos, _Speed * Time.deltaTime);
+    }
+
+    private void MovePlayer()
+    {
+        Vector2 _Move = new Vector2(Input.GetAxis(HorizontalAxisName) * _Speed, Input.GetAxis(VerticalAxisName) * _Speed);
+        _RB.velocity = _Move;
     }
 
     public void OnTriggerEnter2D(Collider2D other)
